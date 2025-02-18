@@ -1,3 +1,3 @@
 # Netlix Analysis Using Sql
 
-[Netflix logo](Netflix_Logo_RGB.png)
+![Netflix logo](Netflix_Logo_RGB.png)
