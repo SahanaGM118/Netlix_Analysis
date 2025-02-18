@@ -10,7 +10,8 @@ select* from Netflix;
 
  ## 1. Count the Number of Movies vs TV Shows
 
-'''select categories,count(*)
+''' sql
+select categories,count(*)
 from netflix
 group by categories;
 '''
