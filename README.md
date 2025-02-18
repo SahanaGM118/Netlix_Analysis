@@ -10,10 +10,10 @@ select* from Netflix;
 
  ## 1. Count the Number of Movies vs TV Shows
 
-***select categories,count(*)
+'''select categories,count(*)
 from netflix
 group by categories;
-***
+'''
 
  ## 2. Find the Most Common Rating for Movies and TV Shows
 
