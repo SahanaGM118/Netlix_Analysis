@@ -5,67 +5,64 @@
 ## Objective
 
 
-select* from Netflix;
+SELECT * FROM Netflix;
 
 
 ### 1. Count the Number of Movies vs TV Shows
 
 ```sql
-select 
+SELECT 
    categories,
    count(*)
-from netflix
-group by categories;
+FROM netflix
+GROUP BY categories;
 ```
 
  ## 2. Find the Most Common Rating for Movies and TV Shows
 
-```sql
 
-```
 ```sql
-select 
+SELECT 
 categories,
 rating
 FROM(
-       select 
+       SELECT 
            categories,
            rating,
-           count(*) as total_rank,
+           COUNT(*) as total_rank,
            Rank() over( partition by categories order by count(*) desc) as ranking
-       from netflix
-       group by 1,2
-	   
+       FROM netflix
+       GROUP BY 1,2	   
 ) as t1
-where ranking =1;
+WHERE ranking =1;
 ```
 
 
  ## 3. List All Movies Released in a Specific Year (e.g., 2020)
 
 ```sql
-select * 
-from netflix
-where release_year = 2020;
+SELECT  * 
+FROM netflix
+WHERE release_year = 2020;
 ```
 
 
  ## 4. Find the Top 5 Countries with the Most Content on Netflix
 ```sql
-select 
+SELECT 
 UNNEST(string_to_array(country,',')) as country,
-count(show_id)
-from netflix
-group by 1
-order by 2 desc
-limit 5;
+COUNT(show_id)
+FROM netflix
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 5;
 ```
 
 
  ##  5.Identify the Longest Movie
 
 ```sql
-select *
+SELECT  *
 from netflix
 where  duration= (select Max(duration) from netflix) and categories = 'Movie';
 ```
@@ -83,53 +80,53 @@ WHERE TO_DATE(date_added, 'month dd, YYYY') >= CURRENT_DATE - INTERVAL '5 years'
  ##  7.Find All Movies/TV Shows by Director 'Rajiv Chilaka'
 
 ```sql
-select *
-from (
+SELECT  *
+FROM (
      select 
          *,
          unnest(string_to_array(director,',')) as director_name
-     from netflix
+     FROM netflix
 ) as t
-where Director_name = 'Rajiv Chilaka';
+WHERE Director_name = 'Rajiv Chilaka';
 ```
 
 
  ##  8.List All TV Shows with More Than 5 Seasons
 
 ```sql
-select *
-from netflix
-where categories = 'TV Show' 
+SELECT  *
+FROM netflix
+WHERE categories = 'TV Show' 
 AND SPLIT_PART(duration, ' ', 1)::INT > 5;
 
--- ::INT > 5 converted into number
+-- ::INT -> converted into number
 ```
 
 
  ##  9. Count the Number of Content Items in Each Genre
 
 ```sql
-select 
-unnest(string_to_array(listed_in,',')) as genre,
+SELECT 
+UNNEST(string_to_array(listed_in,',')) as genre,
 COUNT(*) AS total_content
-from netflix
-group by genre;
+FROM netflix
+GROUP BY genre;
 ```
 
 
  ##  10.Find each year and the average numbers of content release in India on netflix.
 
 ```sql
-select 
+SELECT
 EXTRACT(year from (to_date(date_added, 'month, DD YYYY'))) as years,
-count(*) as year_count,
-round
+COUNT(*) as year_count,
+ROUND
 (
-count(*)::Numeric/(select count(*) from netflix where country = 'India')::NUMERIC*100,2)
+COUNT(*)::Numeric/(select count(*) from netflix where country = 'India')::NUMERIC*100,2)
 as AVG_CONTENT 
-from netflix
-where country = 'India' 
-group by 1;
+FROM netflix
+WHERE country = 'India' 
+GROUP BY 1;
 ```
 
 
@@ -138,9 +135,9 @@ group by 1;
 
 
 ```sql
-select * 
-from netflix
-where   categories='Movie' and listed_in like '%Documentaries';
+SELECT * 
+FROM netflix
+WHERE   categories='Movie' and listed_in like '%Documentaries';
 ```
 
 
@@ -148,9 +145,9 @@ where   categories='Movie' and listed_in like '%Documentaries';
 
 
 ```sql
-select*
-from netflix 
-where Director is null;
+SELECT*
+FROM netflix 
+WHERE Director is null;
 ```
 
 
@@ -158,9 +155,9 @@ where Director is null;
 
 
 ```sql
-select *
-from netflix
-where casts like '%Salman Khan%'
+SELECT *
+FROM netflix
+WHERE casts like '%Salman Khan%'
 AND release_year > EXTRACT(YEAR FROM CURRENT_DATE) - 10;
 ```
 
@@ -170,14 +167,14 @@ AND release_year > EXTRACT(YEAR FROM CURRENT_DATE) - 10;
  ## 14. Find the Top 10 Actors Who Have Appeared in the Highest Number of Movies Produced in India
 
 ```sql
-select 
-unnest(string_to_array(casts,',')) as actors,
-count(*)
-from netflix
-where categories = 'Movie' and country = 'India'
-group by actors
-order by count(*) desc
-limit 10;
+SELECT
+UNNEST(string_to_array(casts,',')) as actors,
+COUNT(*)
+FROM netflix
+WHERE categories = 'Movie' and country = 'India'
+GROUP BY actors
+ORDER BY count(*) desc
+LIMIT 10;
 ```
 
 
@@ -185,6 +182,7 @@ limit 10;
 
 
 ```sql
+--Using subquiery
 SELECT 
     status,
     COUNT(*) AS status_count
@@ -197,10 +195,8 @@ FROM (
     FROM netflix
 ) AS status_content
 GROUP BY status;
-```
 
-
-
+--Using CTE
 
 with NEW_table 
 AS 
@@ -217,3 +213,4 @@ SELECT
     COUNT(*) AS content_count
 FROM NEW_table
 GROUP BY status
+```
